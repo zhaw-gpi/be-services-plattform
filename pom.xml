@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- Version von Maven -->
+    <modelVersion>4.0.0</modelVersion>
+    
+    <!-- Eltern-Projekt importieren. Die Versionsnummer muss übereinstimmen mit den Angaben unten im Teil properties. -->
+    <parent>
+        <groupId>org.camunda.bpm</groupId>
+        <artifactId>camunda-parent</artifactId>
+        <version>7.9.2-ee</version>
+    </parent>
+    
+    <!-- Grundangaben zum Maven-Projekt ohne Version-Attribut, da dieses automatisch vom Parent-Projekt gefüllt wird z.B. mit 7.9.0 oder 7.9.2-ee -->
+    <groupId>ch.zhaw.gpi</groupId>
+    <artifactId>be-services-webapp-webjar</artifactId>
+    <name>BEservices Plattform</name>
+    
+    <!-- Konfiguration des Maven-Projekts -->
+    <properties>
+        <!-- Setzt die Camunda-Version
+             Vorsicht, dass diese bezüglich der Version passend ist 
+             zur Version im Projekt, welche dieses
+             Maven-Projekt als Abhängigkeit verwendet (also eUmzug Plattform 2018).
+             
+             Achtung: Beim Upgrade auf neuere Versionen muss der Local Storage des Browsers
+             geleert werden, weil sonst an etlichen Stellen nur die Translation-
+             Placeholders erscheinen statt der "übersetzten" Texte (sollte in 7.10 behoben sein).
+             Für Google Chrome ist das Vorgehen beschrieben hier:
+             https://forum.camunda.org/t/spring-boot-webapp-login-screen-showing-placeholders/8402/3?u=scepbjoern
+             -->
+        <camunda.version>7.9.2</camunda.version>
+        
+        <!-- Steuert, ob die Enterprise-Version von Camunda benutzt wird ("-ee" schreiben
+        oder die Community-Version (leer lassen). Weitere Bedingung:
+        Es sind Credentials zum Camunda-EE-Repository erforderlich (siehe ganz unten) -->
+        <camunda.enable.ee>-ee</camunda.enable.ee>
+        
+        <!-- Es sind keine Tests erforderlich -->
+        <skipTests>true</skipTests>
+
+        <!-- Verschiedene Eigenschaften, welche innerhalb dieses Pom-Files als auch innerhalb von CSS- und JS-Dateien genutzt werden -->
+        <!-- Zusätzliche Sprache (Deutsch). Muss in https://github.com/camunda/camunda-webapp-translations existieren -->
+        <CUSTOM_LANG>de</CUSTOM_LANG>
+        
+        <!-- Namen der Applikation und des Herstellers, ausgelesen in den config.js-Dateien -->
+        <CUSTOM_VENDOR_NAME>BEservices</CUSTOM_VENDOR_NAME>
+        <CUSTOM_WELCOME_TITLE>Start</CUSTOM_WELCOME_TITLE>		
+        <CUSTOM_TASKLIST_TITLE>Angebote</CUSTOM_TASKLIST_TITLE>
+        <CUSTOM_COCKPIT_TITLE>Cockpit</CUSTOM_COCKPIT_TITLE>
+        <CUSTOM_ADMIN_TITLE>Admin</CUSTOM_ADMIN_TITLE>
+
+        <!-- Farben, Abstände, usw. für verschiedene Elemente, ausgelesen in den user-styles.css-Dateien -->
+        <CUSTOM_COLOR_LINES>#ED1C24</CUSTOM_COLOR_LINES>
+        <CUSTOM_COLOR_LINKS>#ED1C24</CUSTOM_COLOR_LINKS>
+        <CUSTOM_COLOR_TEXT>#000000</CUSTOM_COLOR_TEXT>
+        <CUSTOM_LOGO_BACKGROUND_SIZE>30px</CUSTOM_LOGO_BACKGROUND_SIZE>
+        <CUSTOM_LOGO_BACKGROUND_POSITION>0 6px</CUSTOM_LOGO_BACKGROUND_POSITION>
+        <CUSTOM_LOGO_WIDTH>30px</CUSTOM_LOGO_WIDTH>
+        <BRAND_NAME_WIDTH>15em</BRAND_NAME_WIDTH>
+        
+        <!-- Google Maps API Key. Dieser wird aus einer Umgebungsvariable gelesen, die z.B. gesetzt werden kann in Netbeans wie folgt: Right click Project ->Properties ->Actions -> Clean and Build/Build project -> Set Properties: Add -> Env.GOOGLE_MAPS_KEY=KEY_VON_https://cloud.google.com/maps-platform/#get-started -->
+        <GOOGLE_MAPS_KEY>${env.GOOGLE_MAPS_KEY}</GOOGLE_MAPS_KEY>
+    </properties>
+
+    <!-- Festlegen der benötigten Abhängigkeiten -->
+    <dependencies>
+        <!-- Von den Webapps benötigen wir die das mit classes benannte Subset an Dateien -->
+        <dependency>
+            <groupId>org.camunda.bpm.webapp</groupId>
+            <artifactId>camunda-webapp</artifactId>
+            <classifier>classes</classifier>
+        </dependency>
+        <!-- Falls Enterprise Version, dann benötigen wir auch die Plugins. Ansonsten diesen Teil auskommentieren -->
+        <dependency>
+                <groupId>org.camunda.bpm.webapp</groupId>
+                <artifactId>camunda-webapp-ee-plugins</artifactId>
+                <version>${project.version}</version>
+                <classifier>classes</classifier>
+        </dependency>
+        <!-- Und schliesslich benötigen wir das WebJAR, wobei dieses als optional gekennzeichnet wird, weil die aufrufenden Projekte dadurch wissen, dass sie es nicht zwingend als Abhängigkeit benötigen. Warum? Weil wir es ja anschliessend selbst in Form dieses Projekts ausgeben -->
+        <dependency>
+            <groupId>org.camunda.bpm.webapp</groupId>
+            <artifactId>camunda-webapp-webjar${camunda.enable.ee}</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <!-- Konfiguration des Build-Vorgangs -->
+    <build>
+        <!-- Damit die Versions-Nummer nicht im ausgegebenen Artifakt-Namen ist (wäre Standard) nur den Artifakt-Namen selbst ausgeben -->
+        <finalName>${project.artifactId}</finalName>
+        
+        <!-- Alle CSS und JS-Dateien aus src\main\resources sollen im Build enthalten sein und zudem die Platzhalter (z.B. ${CAMUNDA_TASKLIST_APP}) mit den entsprechenden Properties ersetzt werden (Filtering = true). Die übrigen Dateien (z.B. app/welcome/locales/de.json) sollen ungefiltert kopiert werden. -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.css</include>
+                    <include>**/*.js</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/*.css</exclude>
+                    <exclude>**/*.js</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <!-- Alle übrigen Ressourcen kommen über andere Wege in das endültige WebJAR, mit verschiedenen Maven-Plugins: -->
+        <plugins>
+            <!-- Das originale WebJAR soll zunächst entpackt werden (goal unpack), wobei user-styles.css nicht überschrieben werden sollen (diese kommen ja von uns) -->
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.camunda.bpm.webapp</groupId>
+                                    <artifactId>camunda-webapp-webjar${camunda.enable.ee}</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                    <includes>META-INF/resources/**</includes>
+                                    <excludes>**/user*.css</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Mit Ausnahme von welcome/locales/de.json, welches von Björn übersetzt wurde und noch nicht im Camunda Github-Repository aufgenommen wurde, können alle Sprachdateien direkt aus dem Github-Repository über das dowload-maven-plugin heruntergeladen werden -->
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>translation-tasklist</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/camunda/camunda-webapp-translations/raw/master/tasklist/${CUSTOM_LANG}.json</url>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources/app/tasklist/locales/</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>translation-cockpit</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/camunda/camunda-webapp-translations/raw/master/cockpit/${CUSTOM_LANG}.json</url>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources/app/cockpit/locales/</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>translation-admin</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/camunda/camunda-webapp-translations/raw/master/admin/${CUSTOM_LANG}.json</url>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources/app/admin/locales/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Das eigene Logo (custom-logo.png) und das eigene Favicon (favicon.ico) ist für alle Webapps identisch. Daher ist es in einem separaten Ordner artwork gespeichert, von wo aus es für jede App in den assets/images-Ordner zu kopieren ist -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>images-welcome</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources/app/welcome/assets/images</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>artwork</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>images-tasklist</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources/app/tasklist/assets/images</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>artwork</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>images-cockpit</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources/app/cockpit/assets/images</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>artwork</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>images-admin</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources/app/admin/assets/images</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>artwork</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <!-- Damit auch die neuesten Patches der Camunda-Komponenten verfügbar sind, sollen
+         die Komponenten nicht vom allgemeinen Maven-Repository https://mvnrepository.com
+         geladen werden, sondern von den bei Camunda gehosteten Nexus-Repositories.
+         Diese gibt es einerseits für die Community Edition (camunda-bpm-nexus) und
+         für die Enterprise Edition (camunda-bpm-ee). Die Community Repository funktioniert
+         out-of-the-box, da öffentlich zugänglich.
+
+         Die Enterprise Repository benötigt
+         hingegen Zugangsdaten, welche in einer Datei settings.xml im .m2-Verzeichnis
+         eingefügt werden. Das .m2-Verzeichnis befindet sich auf einem Windows 10-
+         Rechner in C:\Users\BENUTZERNAME\.m2. Der Inhalt von settings.xml sollte sein:
+         <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+             <server>
+                <id>camunda-bpm-ee</id>
+                <username>BENUTZERNAME</username>
+                <password>PASSWORT</password>
+             </server>
+            </servers>
+           </settings> 
+           
+        Hat man diese Daten nicht, dann den ganzen Repositories-Block auskommentieren.
+    -->
+    <repositories>
+        <repository>
+            <id>camunda-bpm-nexus</id>
+            <name>camunda-bpm-nexus</name>
+            <url>https://app.camunda.com/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>camunda-bpm-ee</id>
+            <name>camunda-bpm-ee</name>
+            <url>https://app.camunda.com/nexus/content/repositories/camunda-bpm-ee</url>
+        </repository>
+    </repositories>
+</project>
