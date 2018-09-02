@@ -1,5 +1,5 @@
 body {
-	color: ${CUSTOM_COLOR_TEXT};
+	color:${CUSTOM_COLOR_TEXT};
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 a, [cam-widget-inline-field]>.view-value, [cam-tasklist-task-meta] .groups, .batch-operation-page .page-flow-nav li.active a:after {
