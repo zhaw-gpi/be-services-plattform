@@ -141,7 +141,7 @@
                 </executions>
             </plugin>
 
-            <!-- Mit Ausnahme von welcome/locales/de.json, welches von Björn übersetzt wurde und noch nicht im Camunda Github-Repository aufgenommen wurde, können alle Sprachdateien direkt aus dem Github-Repository über das dowload-maven-plugin heruntergeladen werden -->
+            <!-- Sprachdateien aus dem camunda-webapp-translations-Github-Repository herunterladen über das dowload-maven-plugin -->
             <plugin>
                 <groupId>com.googlecode.maven-download-plugin</groupId>
                 <artifactId>download-maven-plugin</artifactId>
@@ -178,6 +178,17 @@
                         <configuration>
                             <url>https://github.com/camunda/camunda-webapp-translations/raw/master/admin/${CUSTOM_LANG}.json</url>
                             <outputDirectory>${project.build.outputDirectory}/META-INF/resources/app/admin/locales/</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>translation-welcome</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/camunda/camunda-webapp-translations/raw/master/welcome/${CUSTOM_LANG}.json</url>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/resources/app/welcome/locales/</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

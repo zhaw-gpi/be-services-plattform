@@ -2,7 +2,7 @@
 
 > Autoren der Dokumentation: Björn Scheppler
 
-> Dokumentation letztmals aktualisiert: 2.9.2018
+> Dokumentation letztmals aktualisiert: 19.9.2018
 
 Dieses Maven-Projekt erstellt ein WebJAR für die Camunda Webapps mit benutzerdefinierten Eigenschaften (Logo, Farbe, Ubersetzung, usw.) zur Verwendung in der eUmzugsplattform 2018 (https://github.com/zhaw-gpi/eumzug-plattform-2018).
 
@@ -11,8 +11,7 @@ Wichtig: Dieses Projekt ist für sich alleine nicht "lauffähig", da es hier dar
 
 1. **Camunda Webapps WebJAR**: Als Basis für das eigene WebJAR dient das aktuelle von Camunda zur Verfügung gestellte WebJAR, bei dem gewisse Dateien (siehe nächste Punkte) ersetzt oder ergänzt werden.
 2. **Deutsche Sprachdateien**:
-    1. Von https://github.com/camunda/camunda-webapp-translations werden im pom.xml direkt die neusten Sprachdateien für Tasklist, Admin und Cockpit heruntergeladen.
-    2. Für die Welcome-App gab es noch keine Sprachdatei. Diese wurde von Björn erstellt und liegt in src/main/resources/welcome/locales
+    1. Von https://github.com/camunda/camunda-webapp-translations werden im pom.xml direkt die neusten Sprachdateien für Tasklist, Admin, Cockpit und Welcome heruntergeladen.
 3. **Logo und Favicon**: Im Ordner artwork gibt es ein Favicon und ein Logo für den Kanton Bern, die an den entsprechenden Stellen in den Webapps reingeladen werden, um das Standard-Camunda Logo zu ersetzen.
 4. **Benutzerdefinierte Farben und sonstige Stile**: In den user-styles.css-Dateien pro App folgendes angepasst:
     1. Für den Kanton Bern passende Farben für Linien, usw.
