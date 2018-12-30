@@ -8,6 +8,8 @@
 
 Dieses Projekt wird in der [**eUmzugPrototyp-Lösung**](https://github.com/zhaw-gpi/eumzug-plattform-2018) verwendet, welche [eumzug.swiss](https://www.eumzug.swiss) nachbildet. Erarbeitet am [**Institut für Wirtschaftsinformatik** an der ZHAW School of Management and Law](http://www.zhaw.ch/iwi) im Rahmen des [Bachelor-Studiengangs Wirtschaftsinformatik](https://www.zhaw.ch/de/sml/studium/bachelor/wirtschaftsinformatik/) im [**Modul Geschäftsprozessintegration**](https://modulmanagement.sml.zhaw.ch/StaticModDescAblage/Modulbeschreibung_w.BA.XX.2GPI-WIN.XX.pdf).
 
+Hauptinspiration dieses Projekts von diesem [**Camunda Forumsbeitrag**](https://forum.camunda.org/t/spring-boot-replace-config-js-for-webapps-configuration/8401)
+
 ## (Technische) Komponenten der BEservices Plattform
 **Wichtig**: Dieses Projekt ist für sich alleine nicht "lauffähig", da es hier lediglich darum geht, ein WebJAR zu generieren, welches dann in der [**eUmzugPrototyp-Lösung**](https://github.com/zhaw-gpi/eumzug-plattform-2018) verwendet werden kann als teilweise Ersatz für die Standard-Camunda-Webapps.
 
@@ -31,7 +33,8 @@ Dieses Projekt wird in der [**eUmzugPrototyp-Lösung**](https://github.com/zhaw-
 ## Nutzung
 In der [**eUmzugPrototyp-Lösung**](https://github.com/zhaw-gpi/eumzug-plattform-2018) muss im pom-File die Abhängigkeit zu dieser Ressource wie folgt hergestellt werden, was einerseits die Standard-Camunda-Webapps integriert, aber das WebJAR ersetzt mit diesem angepassten:
 
-```<dependency>
+```
+<dependency>
     <groupId>org.camunda.bpm.springboot</groupId>
     <artifactId>camunda-bpm-spring-boot-starter-webapp${camunda.enable.ee}</artifactId>
     <version>${camunda-bpm-spring-boot-starter.version}</version>
