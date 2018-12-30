@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.camunda.bpm</groupId>
         <artifactId>camunda-parent</artifactId>
-        <version>7.9.2-ee</version>
+        <version>7.10.1-ee</version>
     </parent>
     
     <!-- Grundangaben zum Maven-Projekt ohne Version-Attribut, da dieses automatisch vom Parent-Projekt gefüllt wird z.B. mit 7.9.0 oder 7.9.2-ee -->
@@ -29,7 +29,7 @@
              Für Google Chrome ist das Vorgehen beschrieben hier:
              https://forum.camunda.org/t/spring-boot-webapp-login-screen-showing-placeholders/8402/3?u=scepbjoern
              -->
-        <camunda.version>7.9.2</camunda.version>
+        <camunda.version>7.10.1</camunda.version>
         
         <!-- Steuert, ob die Enterprise-Version von Camunda benutzt wird ("-ee" schreiben
         oder die Community-Version (leer lassen). Weitere Bedingung:
