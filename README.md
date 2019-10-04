@@ -2,7 +2,7 @@
 
 > Autoren der Dokumentation: Björn Scheppler
 
-> Dokumentation letztmals aktualisiert: 30.12.2018
+> Dokumentation letztmals aktualisiert: 4.10.2019
 
 **Maven**-Projekt zur Erstelllung eines **WebJAR** für die [**Camunda Webapps**](https://docs.camunda.org/manual/latest/webapps/) mit benutzerdefinierten Eigenschaften (Logo, Farbe, Ubersetzung, usw.).
 
@@ -22,12 +22,11 @@ Hauptinspiration dieses Projekts von diesem [**Camunda Forumsbeitrag**](https://
     2. Tasklist-App: Zahlreiche Elemente über display:hidden ausgeblendet, um das GUI übersichtlicher zu halten.
 5. **Benutzerdefinierte Scripts** in src\main\resources\META-INF\resources\app\tasklist\scripts\config.js:
     1. **Stripe Checkout**: In der Umzugsplattform wird für den Bezahlvorgang der Stripe-Dienst genutzt.
-    2. **Google Maps**: Im "Alle Angaben prüfen"-Formular wird die Zuzugsadresse in einer Google Maps-Karte angezeigt. **Wichtig**: Dies benötigt einen Google Maps-Entwickler-Key, welchen man als Umgebungsvariable GOOGLE_MAPS_KEY in diesem Projekt (nicht in Umzugsplattform) setzen muss. Hat man diesen nicht, wird es in der Umzugsplattform stets eine Fehlermeldung in der Konsole des Browsers geben.
 
 ## Deployment
 1. Wenn man die **Enterprise Edition** von Camunda verwenden will, benötigt man die Zugangsdaten zum Nexus Repository und eine gültige Lizenz. Wie man diese "installiert", steht in den Kommentaren im pom.xml.
-2. **Erstmalig** oder bei Problemen ein **Clean & Build (Netbeans)**, respektive `mvn clean install` (Cmd) durchführen
-3. Bei Änderungen am POM-File oder bei **(Neu)kompilierungsbedarf** genügt ein **Build (Netbeans)**, respektive `mvn install`
+2. **Erstmalig** oder bei Problemen ein `mvn clean install` durchführen
+3. Bei Änderungen am POM-File oder bei **(Neu)kompilierungsbedarf** genügt ein `mvn install`
 4. Beim Build-Prozess wird das **JAR-File** auch im lokalen Maven-Repository abgelegt.
 
 ## Nutzung
@@ -45,7 +44,7 @@ In der [**eUmzugPrototyp-Lösung**](https://github.com/zhaw-gpi/eumzug-plattform
             <artifactId>camunda-webapp-webjar${camunda.enable.ee}</artifactId>
         </exclusion>
     </exclusions>
-</dependency>        
+</dependency>
 <dependency>
     <groupId>ch.zhaw.gpi</groupId>
     <artifactId>be-services-webapp-webjar</artifactId>

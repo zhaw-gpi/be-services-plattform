@@ -1,34 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <!-- Version von Maven -->
     <modelVersion>4.0.0</modelVersion>
     
-    <!-- Eltern-Projekt importieren. Die Versionsnummer muss übereinstimmen mit den Angaben unten im Teil properties. -->
+    <!-- Gleiche Version von Camunda verwenden wie das e-Umzug-Projekt selbst -->
     <parent>
-        <groupId>org.camunda.bpm</groupId>
-        <artifactId>camunda-parent</artifactId>
+        <groupId>org.camunda.bpm.webapp</groupId>
+        <artifactId>camunda-webapp-ee-root</artifactId>
         <version>7.10.1-ee</version>
     </parent>
     
-    <!-- Grundangaben zum Maven-Projekt ohne Version-Attribut, da dieses automatisch vom Parent-Projekt gefüllt wird z.B. mit 7.9.0 oder 7.9.2-ee -->
     <groupId>ch.zhaw.gpi</groupId>
     <artifactId>be-services-webapp-webjar</artifactId>
     <name>BEservices Plattform</name>
+    <packaging>jar</packaging>
     
-    <!-- Konfiguration des Maven-Projekts -->
     <properties>
-        <!-- Setzt die Camunda-Version
-             Vorsicht, dass diese bezüglich der Version passend ist 
-             zur Version im Projekt, welche dieses
-             Maven-Projekt als Abhängigkeit verwendet (also eUmzug Plattform 2018).
-             
-             Achtung: Beim Upgrade auf neuere Versionen muss der Local Storage des Browsers
-             geleert werden, weil sonst an etlichen Stellen nur die Translation-
-             Placeholders erscheinen statt der "übersetzten" Texte (sollte in 7.10 behoben sein).
-             Für Google Chrome ist das Vorgehen beschrieben hier:
-             https://forum.camunda.org/t/spring-boot-webapp-login-screen-showing-placeholders/8402/3?u=scepbjoern
-             -->
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
+        <skipTests>true</skipTests>
+        
         <camunda.version>7.10.1</camunda.version>
         
         <!-- Steuert, ob die Enterprise-Version von Camunda benutzt wird ("-ee" schreiben
@@ -58,17 +50,14 @@
         <CUSTOM_LOGO_BACKGROUND_POSITION>0 6px</CUSTOM_LOGO_BACKGROUND_POSITION>
         <CUSTOM_LOGO_WIDTH>30px</CUSTOM_LOGO_WIDTH>
         <BRAND_NAME_WIDTH>15em</BRAND_NAME_WIDTH>
-        
-        <!-- Google Maps API Key. Dieser wird aus einer Umgebungsvariable gelesen, die z.B. gesetzt werden kann in Netbeans wie folgt: Right click Project ->Properties ->Actions -> Clean and Build/Build project -> Set Properties: Add -> Env.GOOGLE_MAPS_KEY=KEY_VON_https://cloud.google.com/maps-platform/#get-started -->
-        <GOOGLE_MAPS_KEY>${env.GOOGLE_MAPS_KEY}</GOOGLE_MAPS_KEY>
     </properties>
 
-    <!-- Festlegen der benötigten Abhängigkeiten -->
     <dependencies>
         <!-- Von den Webapps benötigen wir die das mit classes benannte Subset an Dateien -->
         <dependency>
             <groupId>org.camunda.bpm.webapp</groupId>
             <artifactId>camunda-webapp</artifactId>
+            <type>jar</type>
             <classifier>classes</classifier>
         </dependency>
         <!-- Falls Enterprise Version, dann benötigen wir auch die Plugins. Ansonsten diesen Teil auskommentieren -->
@@ -76,12 +65,14 @@
                 <groupId>org.camunda.bpm.webapp</groupId>
                 <artifactId>camunda-webapp-ee-plugins</artifactId>
                 <version>${project.version}</version>
+                <type>jar</type>
                 <classifier>classes</classifier>
         </dependency>
         <!-- Und schliesslich benötigen wir das WebJAR, wobei dieses als optional gekennzeichnet wird, weil die aufrufenden Projekte dadurch wissen, dass sie es nicht zwingend als Abhängigkeit benötigen. Warum? Weil wir es ja anschliessend selbst in Form dieses Projekts ausgeben -->
         <dependency>
             <groupId>org.camunda.bpm.webapp</groupId>
             <artifactId>camunda-webapp-webjar${camunda.enable.ee}</artifactId>
+            <type>jar</type>
             <optional>true</optional>
         </dependency>
     </dependencies>
@@ -132,7 +123,7 @@
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                                    <includes>**</includes>
+                                    <includes>META-INF/resources/**</includes>
                                     <excludes>**/user*.css</excludes>
                                 </artifactItem>
                             </artifactItems>
@@ -264,6 +255,16 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Ohne die folgende Angaben versucht Maven mit JDK 5 zu kompilieren -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     
@@ -291,11 +292,6 @@
         Hat man diese Daten nicht, dann den ganzen Repositories-Block auskommentieren.
     -->
     <repositories>
-        <repository>
-            <id>camunda-bpm-nexus</id>
-            <name>camunda-bpm-nexus</name>
-            <url>https://app.camunda.com/nexus/content/groups/public</url>
-        </repository>
         <repository>
             <id>camunda-bpm-ee</id>
             <name>camunda-bpm-ee</name>
